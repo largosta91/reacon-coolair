@@ -1,4 +1,3 @@
-
 html, body {
     box-sizing: border-box;
     width: 100%;
@@ -37,16 +36,23 @@ body > * {
 /* ===========================
    NAVEGACIÓN
    =========================== */
-/* ===========================
-   NAVEGACIÓN
-   =========================== */
 nav#main-nav {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     z-index: 50;
-    transition: background-color 0.25s ease, box-shadow 0.25s ease;
+    /* Inicialmente transparente */
+    background-color: transparent !important;
+    backdrop-filter: none;
+    transition: all 0.3s ease;
+}
+
+/* Estado cuando se hace scroll */
+nav#main-nav.nav-scrolled {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Gradiente en el container interior del nav */
@@ -69,12 +75,20 @@ nav#main-nav > div:first-child::after {
     );
     z-index: 10;
     pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Mostrar gradiente solo cuando hay scroll */
+nav#main-nav.nav-scrolled > div:first-child::after {
+    opacity: 1;
 }
 
 /* Asegurar que el div tenga position relative */
 nav#main-nav > div:first-child {
     position: relative;
 }
+
 /* ===========================
    HERO ANIMATIONS
    =========================== */
@@ -95,6 +109,25 @@ nav#main-nav > div:first-child {
 }
 
 /* ===========================
+   FIX HERO EN MÓVIL
+   =========================== */
+@media (max-width: 768px) {
+    /* Ajustar sección hero para móvil */
+    section.min-h-screen {
+        min-height: 100vh;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+    
+    /* Asegurar que el contenido se vea completo */
+    section.min-h-screen > div:last-child {
+        padding-top: 80px;
+        padding-bottom: 40px;
+    }
+}
+
+/* ===========================
    ICONOS FLOTANTES (COPOS 50% más pequeños)
    =========================== */
 .floating-icon {
@@ -106,7 +139,7 @@ nav#main-nav > div:first-child {
 }
 
 .floating-icon i {
-    font-size: 1.5rem; /* 50% del tamaño original (era 3rem aprox) */
+    font-size: 1.5rem;
     line-height: 1;
     display: inline-block;
 }
@@ -171,6 +204,56 @@ nav#main-nav > div:first-child {
 }
 
 /* ===========================
+   LINKS DE NAVEGACIÓN
+   =========================== */
+.nav-link {
+    color: white;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    padding-bottom: 4px;
+    transition: color 0.3s ease;
+}
+
+/* Cuando se hace scroll, cambiar a gris oscuro */
+nav#main-nav.nav-scrolled .nav-link {
+    color: #1f2937;
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(to right, #22d3ee, #06b6d4);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #06b6d4;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+/* ===========================
+   LOGO - CAMBIO DE COLOR AL SCROLL
+   =========================== */
+/* Logo por defecto (nav transparente) */
+nav#main-nav a[aria-label*="Re-acon"] span:last-child {
+    color: white;
+    transition: color 0.3s ease;
+}
+
+/* Logo cuando hay scroll (nav blanco) */
+nav#main-nav.nav-scrolled a[aria-label*="Re-acon"] span:last-child {
+    color: #1f2937;
+}
+
+/* ===========================
    RESPONSIVE
    =========================== */
 @media (max-width: 768px) {
@@ -186,6 +269,62 @@ nav#main-nav > div:first-child {
         width: 5.5rem;
         height: 3rem;
     }
+    
+    /* FIX H1 EN MÓVIL - Asegurar que el gradiente se vea */
+    h1 .text-transparent {
+        -webkit-background-clip: text !important;
+        background-clip: text !important;
+        -webkit-text-fill-color: transparent !important;
+        background-image: linear-gradient(to right, #22d3ee, #3b82f6) !important;
+    }
+    
+    /* Si el gradiente no funciona, mostrar color sólido como fallback */
+    @supports not (background-clip: text) {
+        h1 .text-transparent {
+            color: #22d3ee !important;
+            -webkit-text-fill-color: #22d3ee !important;
+        }
+    }
+}
+
+/* ===========================
+   MENÚ MÓVIL - MEJORADO
+   =========================== */
+#mobile-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    width: 100%;
+}
+
+/* Botón hamburguesa - mejorar visibilidad */
+#menu-button {
+    position: relative;
+    z-index: 60;
+    padding: 0.5rem;
+}
+
+/* Cuando el nav tiene scroll, el botón debe ser oscuro */
+nav#main-nav.nav-scrolled #menu-button {
+    color: #1f2937;
+}
+
+/* Cuando el nav es transparente, el botón debe ser blanco */
+nav#main-nav:not(.nav-scrolled) #menu-button {
+    color: white;
+}
+
+/* Logo en móvil - ajustar para que no se vea mal */
+@media (max-width: 768px) {
+    nav#main-nav .text-2xl {
+        font-size: 1.25rem;
+    }
+    
+    nav#main-nav img {
+        height: 2rem;
+        width: 2rem;
+    }
 }
 
 @media (max-width: 640px) {
@@ -193,30 +332,4 @@ nav#main-nav > div:first-child {
         padding-left: 0.75rem;
         padding-right: 0.75rem;
     }
-}
-.nav-link {
-    color: #1f2937;
-    text-decoration: none;
-    position: relative;
-    display: inline-block; /* Esto ayuda */
-    padding-bottom: 4px; /* Espacio para la línea */
-}
-
-.nav-link::after {
-    content: '';
-    position: absolute;
-    bottom: 0; /* Cambiado de -2px a 0 */
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: linear-gradient(to right, #22d3ee, #06b6d4); /* Celeste degradado */
-    transition: width 0.3s ease;
-}
-
-.nav-link:hover {
-    color: #06b6d4; /* Color celeste al hover */
-}
-
-.nav-link:hover::after {
-    width: 100%;
 }
